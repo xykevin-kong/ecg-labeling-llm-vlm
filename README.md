@@ -32,11 +32,11 @@ This project is based on the PTB-XL dataset.
 ## Data Directory Structure
 
 - data/
+  - interim/ptbxl/
   - raw/ptbxl/
     - ptbxl_database.csv
     - SNOMED_labels.json
     - records500/
-  - interim/ptbxl/
 - outputs/ptbxl/
 - src/
 
@@ -262,11 +262,11 @@ Step1 -> Step2 -> Step3 -> Step4 -> Step5 -> Step6
 ## 数据目录结构
 
 - data/
+  - interim/ptbxl/
   - raw/ptbxl/
     - ptbxl_database.csv
     - SNOMED_labels.json
     - records500/
-  - interim/ptbxl/
 - outputs/ptbxl/
 - src/
 
