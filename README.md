@@ -49,7 +49,43 @@ This project is based on the PTB-XL dataset.
 
 - Only the original PTB-XL dataset is required  
 - Place the `records500/` directory under `data/raw/ptbxl/`  
-- Ensure `ptbxl_database.csv` and `records500/` are in the same directory level  
+- Ensure `ptbxl_database.csv` and `records500/` are in the same directory level
+
+## Quick Start
+```bash
+
+cd /path/to/ecg_preprocessing_pipeline
+
+pip install -r requirements.txt
+
+# set API keys
+
+export DEEPSEEK_API_KEY=xxx
+
+export DASHSCOPE_API_KEY=xxx
+
+# run pipeline
+
+bash run_ptbxl_pipeline.sh
+```
+
+## Parameters
+
+- ROOT_DIR: project root directory  
+- DEEPSEEK_API_KEY: LLM calls  
+- DASHSCOPE_API_KEY: VLM calls  
+
+## Optional Parameters
+
+- STEP2_MAX_WORKERS  
+- STEP3_3_MAX_WORKERS  
+- STEP4_MAX_WORKERS  
+- STEP5_MAX_WORKERS  
+
+- STEP2_MODEL_NAME  
+- STEP5_MODEL_NAME  
+- STEP5_BASE_URL
+
 ## Environment Setup
 
 This project is implemented in Python, and Python 3.10 or above is recommended.
@@ -187,32 +223,6 @@ Only samples with consistent VLM results (both = 1) are retained.
 Output:
 ptxbl_report_llm_label_with_vlm_quality.jsonl  
 
-## Execution
-
-bash run_pipeline.sh
-
-Required:
-
-ROOT_DIR="/path/to/ecg_preprocessing_pipeline"  
-DEEPSEEK_API_KEY="xxx"  
-DASHSCOPE_API_KEY="xxx"  
-
-## Parameters
-
-- ROOT_DIR: project root directory  
-- DEEPSEEK_API_KEY: LLM calls  
-- DASHSCOPE_API_KEY: VLM calls  
-
-## Optional Parameters
-
-- STEP2_MAX_WORKERS  
-- STEP3_3_MAX_WORKERS  
-- STEP4_MAX_WORKERS  
-- STEP5_MAX_WORKERS  
-
-- STEP2_MODEL_NAME  
-- STEP5_MODEL_NAME  
-- STEP5_BASE_URL  
 
 ## Design Considerations
 
@@ -283,6 +293,42 @@ Step1 -> Step2 -> Step3 -> Step4 -> Step5 -> Step6
 - 将 `records500/` 目录放入 `data/raw/ptbxl/` 下  
 - 确保 `ptbxl_database.csv` 与 `records500/` 位于同一目录层级  
 
+## 轻启动
+```bash
+
+cd /path/to/ecg_preprocessing_pipeline
+
+pip install -r requirements.txt
+
+# set API keys
+
+export DEEPSEEK_API_KEY=xxx
+
+export DASHSCOPE_API_KEY=xxx
+
+# run pipeline
+
+bash run_ptbxl_pipeline.sh
+```
+
+
+参数说明
+
+* ROOT_DIR: 项目根目录路径（即本项目所在目录）
+* DEEPSEEK_API_KEY: 用于 Step 2 / Step 3 中 LLM 调用（文本报告解析与标签映射）
+* DASHSCOPE_API_KEY: 用于 Step 5 中 VLM 调用（ECG 图像信号质量验证）
+
+⚡ 运行参数（可选）
+
+* STEP2_MAX_WORKERS: Step 2 并发线程数（LLM 标签提取）
+* STEP3_3_MAX_WORKERS: Step 3 并发线程数
+* STEP4_MAX_WORKERS: Step 4 并发线程数
+* STEP5_MAX_WORKERS: Step 5 并发线程数（VLM 推理）
+* STEP2_MODEL_NAME / STEP3_3_MODEL_NAME: LLM 模型名称
+* STEP5_MODEL_NAME: VLM 模型名称
+* STEP5_BASE_URL: VLM API 接口地址
+
+
 ## 环境配置
 
 本项目基于 Python 实现，建议使用 Python 3.10 及以上版本。
@@ -290,6 +336,7 @@ Step1 -> Step2 -> Step3 -> Step4 -> Step5 -> Step6
 pip install -r requirements.txt
 
 如果在运行过程中出现缺失依赖（如 ModuleNotFoundError），可根据提示手动安装对应包。
+
 
 ## Step 1: 筛选人工参与样本并初始化结构
 
@@ -467,21 +514,6 @@ bash run_pipeline.sh
 * DEEPSEEK_API_KEY=“xxx”
 * DASHSCOPE_API_KEY=“xxx”
 
-参数说明
-
-* ROOT_DIR: 项目根目录路径（即本项目所在目录）
-* DEEPSEEK_API_KEY: 用于 Step 2 / Step 3 中 LLM 调用（文本报告解析与标签映射）
-* DASHSCOPE_API_KEY: 用于 Step 5 中 VLM 调用（ECG 图像信号质量验证）
-
-⚡ 运行参数（可选）
-
-* STEP2_MAX_WORKERS: Step 2 并发线程数（LLM 标签提取）
-* STEP3_3_MAX_WORKERS: Step 3 并发线程数
-* STEP4_MAX_WORKERS: Step 4 并发线程数
-* STEP5_MAX_WORKERS: Step 5 并发线程数（VLM 推理）
-* STEP2_MODEL_NAME / STEP3_3_MODEL_NAME: LLM 模型名称
-* STEP5_MODEL_NAME: VLM 模型名称
-* STEP5_BASE_URL: VLM API 接口地址
 
 ## 设计要点
 
