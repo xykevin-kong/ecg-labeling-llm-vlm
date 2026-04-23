@@ -1,5 +1,13 @@
 # ECG Diagnostic Label Construction and Signal Quality Annotation Pipeline Based on LLM and VLM (PTB-XL)
 
+## Pipeline Overview
+
+<p align="center">
+
+  <img src="Pipeline.png" width="900"/>
+
+</p>
+
 ## Project Overview
 
 This project constructs a complete ECG data preprocessing and annotation pipeline based on the PTB-XL dataset, integrating large language models (LLMs) and vision-language models (VLMs) to achieve:
