@@ -32,6 +32,11 @@ Step1 → Step2 → Step3 → Step4 → Step5 → Step6
 - outputs/ptbxl/
 - src/
 
+**Notes:**
+
+- Only the original PTB-XL dataset is required  
+- Place the `records500/` directory under `data/raw/ptbxl/`  
+- Ensure `ptbxl_database.csv` and `records500/` are in the same directory level  
 ## Environment Setup
 
 This project is implemented in Python, and Python 3.10 or above is recommended.
@@ -240,14 +245,20 @@ Step1 -> Step2 -> Step3 -> Step4 -> Step5 -> Step6
 
 ## 数据目录结构
 
-* data/
-    * raw/ptbxl/
-        * ptbxl_database.csv
-        * SNOMED_labels.json
-        * records500/
-    * interim/ptbxl/
-* outputs/ptbxl/
-* src/
+- data/
+  - raw/ptbxl/
+    - ptbxl_database.csv
+    - SNOMED_labels.json
+    - records500/
+  - interim/ptbxl/
+- outputs/ptbxl/
+- src/
+
+**说明:**
+
+- 仅需下载 PTB-XL 原始数据  
+- 将 `records500/` 目录放入 `data/raw/ptbxl/` 下  
+- 确保 `ptbxl_database.csv` 与 `records500/` 位于同一目录层级  
 
 ## 环境配置
 
