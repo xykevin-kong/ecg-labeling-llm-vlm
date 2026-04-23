@@ -3,7 +3,6 @@
 ## Pipeline Overview
 
 ![Pipeline](Pipeline.png)
-
 ## Project Overview
 
 This project constructs a complete ECG data preprocessing and annotation pipeline based on the PTB-XL dataset, integrating large language models (LLMs) and vision-language models (VLMs) to achieve:
