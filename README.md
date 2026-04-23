@@ -35,11 +35,13 @@ This project is based on the PTB-XL dataset.
   - interim/ptbxl/
   - raw/ptbxl/
     - ptbxl_database.csv
-    - SNOMED_labels.json
     - records500/
+    - SNOMED_labels.json
 - outputs/ptbxl/
 - src/
-
+- requirements.txt
+- run_ptbxl_pipeline.sh
+  
 **Notes:**
 
 - Only the original PTB-XL dataset is required  
@@ -265,10 +267,12 @@ Step1 -> Step2 -> Step3 -> Step4 -> Step5 -> Step6
   - interim/ptbxl/
   - raw/ptbxl/
     - ptbxl_database.csv
-    - SNOMED_labels.json
     - records500/
+    - SNOMED_labels.json
 - outputs/ptbxl/
 - src/
+- requirements.txt
+- run_ptbxl_pipeline.sh
 
 **说明:**
 
