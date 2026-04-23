@@ -21,6 +21,14 @@ The workflow is divided into three parts:
 
 Step1 → Step2 → Step3 → Step4 → Step5 → Step6
 
+## Dataset
+
+This project is based on the PTB-XL dataset.
+
+- Official website: https://physionet.org/content/ptb-xl/1.0.3/  
+
+- Source: PhysioNet
+  
 ## Data Directory Structure
 
 - data/
@@ -243,6 +251,14 @@ DASHSCOPE_API_KEY="xxx"
 
 Step1 -> Step2 -> Step3 -> Step4 -> Step5 -> Step6
 
+## 数据集
+
+本项目基于 PTB-XL 数据集。
+
+- 官方网站: https://physionet.org/content/ptb-xl/1.0.3/  
+
+- 数据来源: PhysioNet
+  
 ## 数据目录结构
 
 - data/
