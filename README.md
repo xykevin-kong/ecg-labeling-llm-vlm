@@ -2,11 +2,7 @@
 
 ## Pipeline Overview
 
-<p align="center">
-
-  <img src="Pipeline.png" width="900"/>
-
-</p>
+![Pipeline](Pipeline.png)
 
 ## Project Overview
 
