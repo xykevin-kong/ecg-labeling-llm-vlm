@@ -34,8 +34,8 @@ This project is based on the PTB-XL dataset.
 - data/
   - interim/ptbxl/
   - raw/ptbxl/
-    - ptbxl_database.csv
     - records500/
+    - ptbxl_database.csv
     - SNOMED_labels.json
 - outputs/ptbxl/
 - src/
@@ -266,8 +266,8 @@ Step1 -> Step2 -> Step3 -> Step4 -> Step5 -> Step6
 - data/
   - interim/ptbxl/
   - raw/ptbxl/
-    - ptbxl_database.csv
     - records500/
+    - ptbxl_database.csv
     - SNOMED_labels.json
 - outputs/ptbxl/
 - src/
