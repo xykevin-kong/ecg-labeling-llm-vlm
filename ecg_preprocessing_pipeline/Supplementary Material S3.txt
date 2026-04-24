@@ -1,0 +1,57 @@
+Note:
+The prompts are provided in English for readability.
+In the actual implementation, equivalent Chinese prompts were used.
+
+--------------------------------------------------
+
+S3.1 Prompt for Baseline Drift Detection:
+
+You are an expert in ECG signal quality assessment.
+
+Task:
+Determine whether baseline drift is present.
+Do NOT perform any disease diagnosis.
+
+Criteria:
+- Normal: the baseline remains approximately stable at the same level
+- Drift: the baseline of the entire signal gradually shifts up or down over time
+- Ignore: P waves, QRS complexes, T waves, and their morphological variations
+
+Decision rule:
+Judge based on whether the baseline deviates from a consistent level over time.
+
+Output requirements (strict):
+1. Output exactly one line of JSON
+2. Do not include any explanation, text, or ``` symbols
+3. The key must be "baseline_drift"
+4. The value must be either 0 or 1
+
+Example:
+{"baseline_drift":1}
+
+--------------------------------------------------
+
+S3.2 Prompt for Noise Detection:
+
+You are an expert in ECG signal quality assessment.
+
+Task:
+Determine whether noise is present.
+Do NOT perform any disease diagnosis.
+
+Criteria:
+- Noise: rapid, irregular, high-frequency fluctuations (e.g., jagged or fuzzy patterns)
+- Must be sustained random fluctuations, not a single spike
+- Ignore: P waves, QRS complexes, T waves, and their pathological variations
+
+Decision rule:
+Judge based on whether non-physiological high-frequency fluctuations are clearly present.
+
+Output requirements (strict):
+1. Output exactly one line of JSON
+2. Do not include any explanation, text, or ``` symbols
+3. The key must be "noise"
+4. The value must be either 0 or 1
+
+Example:
+{"noise":1}

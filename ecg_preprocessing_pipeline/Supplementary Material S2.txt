@@ -1,0 +1,275 @@
+Note:
+The prompts are provided in English for readability.
+In the actual implementation, equivalent Chinese prompts were used.
+
+
+
+
+S2.1 Prompt for LLM1 / LLM2 (Label Extraction):
+Please strictly complete the following task and output only a single valid JSON object.
+Do not include any explanation, prefix/suffix, or markdown.
+
+⚠️ The output must be valid JSON:
+- No ```json ``` or any additional text
+- Only one JSON object is allowed
+- No missing fields
+- No field renaming
+
+Task:
+You are given an ECG report. You must complete the following:
+
+1. Translate the report into standardized medical Chinese and store it in "report_cn"
+   - Must strictly follow the original text
+   - Do not add information not present in the original
+   - Do not omit any information
+   - No inference is allowed
+
+2. Extract labels into report_label.raw
+   - "raw" must consist of medical terms or features directly extracted from report_cn
+   - May include diagnoses, rhythms, waveform/ECG features, conduction abnormalities, ischemia/infarction-related descriptions
+   - Expressions such as "abnormal", "changes", and "low voltage" are allowed
+   - Examples: "low voltage", "sinus rhythm", "normal ECG", "abnormal QRS", "ST depression"
+   - Only use information explicitly present in report_cn
+   - Do not rewrite or infer beyond the original meaning
+
+3. Map raw labels to report_label.mapped
+   - "mapped" labels must be selected from the predefined label set below
+   - Do not create new labels
+   - Do not modify label names
+   - Select the most appropriate standard label
+   - If no suitable label exists, do not force mapping
+   - 2:1 conduction and 3:1 conduction should not be mapped
+
+4. Place any unmatched raw labels into report_label.unmapped
+
+5. Assign boolean values (true/false) for the following:
+   - explicit: whether explicit diagnoses or features are present
+   - uncertain: whether expressions of uncertainty appear (e.g., possible, suspected, nicht auszuschliessen, möglich, wahrscheinlich, verdacht)
+   - historical: whether historical or comparison information is present (e.g., previous, compared with)
+   - old_MI: whether old myocardial infarction is explicitly mentioned (e.g., old MI, infarkt alt, wahrscheinlich alt)
+
+=====================
+[CRITICAL RULES — MUST BE STRICTLY FOLLOWED]
+=====================
+
+A. Current vs. Historical
+- Expressions such as "previous", "compared with", etc. indicate historical information
+- Historical diagnoses must NOT be included
+- Only retain findings from the current examination
+
+---------------------
+
+B. Negation
+- Expressions such as "no", "without", "absent" indicate absence of findings
+- These diagnoses must NOT be included
+
+Example:
+"No T-wave inversion" → ❌ Do NOT output "T-wave inversion"
+
+---------------------
+
+C. Uncertain diagnoses (MUST be removed)
+- Expressions such as "possible", "likely", "suspected", "verdacht"
+- Uncertain diagnoses must NOT appear in raw / mapped / unmapped
+
+---------------------
+
+D. No medical inference
+- Only extract findings explicitly stated in the report
+- Do NOT infer new diagnoses
+
+Example:
+"T-wave abnormality" → ❌ Do NOT infer myocardial infarction
+
+---------------------
+
+E. Conflicting diagnoses
+- For example: complete vs. incomplete conduction block
+- Only retain one, based on the explicit report
+
+---------------------
+
+F. Old myocardial infarction (IMPORTANT)
+- All expressions of old/chronic myocardial infarction must be unified as:
+  "Old Myocardial Infarction"
+- Do NOT map region-specific old MI (e.g., inferior old MI) to multiple labels
+- Only explicitly stated acute or unspecified MI can be mapped to other MI-related labels
+
+---------------------
+
+G. Normal vs. Abnormal
+- "Normal ECG" can only coexist with "Sinus Rhythm"
+- If any abnormality is present → remove "Normal ECG"
+
+---------------------
+
+H. Priority
+- Explicit diagnosis > negation > uncertainty
+- Only retain explicit and confirmed current findings
+
+- The following must NOT appear in mapped or unmapped:
+  - normal axis
+  - no abnormality
+  - normal variant
+
+---------------------
+
+I. Existing labels are not trustworthy
+- Always rely on the report itself
+- Do NOT copy existing labels
+
+---------------------
+
+J. Additional rule
+- If other normal ECG-related descriptions are present
+- "Normal ECG" must NOT be included in mapped
+
+⚠️ Important constraints:
+- Every element in mapped must come from the label set
+- unmapped must not contain any element already in mapped
+- raw / mapped / unmapped should be empty lists [] if no content exists
+
+The label set is provided below (mapped must be selected from it):
+{label_list}
+
+=====================
+[OUTPUT FORMAT — MUST BE STRICTLY FOLLOWED]
+=====================
+
+{
+  "report_cn": "",
+  "report_label": {
+    "raw": [],
+    "mapped": [],
+    "unmapped": []
+  },
+  "explicit": false,
+  "uncertain": false,
+  "historical": false,
+  "old_MI": false
+}
+
+ECG report:
+{report}
+
+
+
+
+
+S2.2 Prompt for LLM3 (Consistency Arbitration):
+You are an ECG report arbitrator.
+
+⚠️ The following rules have the highest priority and must be strictly followed.
+⚠️ Output only a single valid JSON object. Do not include any explanation, prefix/suffix, or markdown.
+
+=====================
+[INPUT]
+=====================
+
+Original report:
+{report}
+
+LLM1:
+{llm1_text}
+
+LLM2:
+{llm2_text}
+
+=====================
+[TASK]
+=====================
+
+Based on the original report, adjudicate between the outputs of LLM1 and LLM2 and produce the final standardized result.
+
+=====================
+[ADJUDICATION RULES]
+=====================
+
+1. If the raw, mapped, and unmapped fields of LLM1 and LLM2 are completely identical
+→ status = "pass"
+
+2. If LLM1 and LLM2 are highly consistent (different wording but equivalent meaning)
+→ status = "high_consistency"
+
+3. If there are clear discrepancies
+→ You must independently re-evaluate the report
+→ The final result may differ from both LLM1 and LLM2
+→ status = "conflict"
+→ A brief reason must be provided
+
+=====================
+[CRITICAL RULES — MUST BE STRICTLY FOLLOWED]
+=====================
+
+A. Current vs. historical
+- Historical information such as previous findings must not be output
+
+B. Negation
+- Expressions such as no / without / absent must not generate diagnoses
+
+C. Uncertain diagnoses
+- Expressions such as possible / consider / cannot exclude must not appear in any field
+
+D. No inference
+- Only findings explicitly stated in the report may be extracted
+
+E. Conflicting diagnoses
+- Only one may be retained
+
+F. Old myocardial infarction
+- All expressions indicating old / previous myocardial infarction must be uniformly mapped to:
+  "Old Myocardial Infarction"
+
+G. Normal vs. abnormal
+- If any abnormal finding is present → remove "Normal ECG"
+- "Normal ECG" may only coexist with "Sinus Rhythm"
+
+H. Priority
+- Explicit diagnosis > negation > speculative information
+
+- The following must not appear in mapped / unmapped:
+  normal axis, no abnormality, normal variant
+
+I. Do not copy LLM1/LLM2 directly
+- Re-evaluation must be based on the original report
+
+=====================
+[OUTPUT REQUIREMENTS]
+=====================
+
+- final.report_cn must strictly reflect the original report
+- raw: medical expressions directly derived from the report
+- mapped: labels selected only from the predefined label set
+- unmapped: expressions that cannot be matched to the label set
+
+- Every element in mapped must come from the label set
+- unmapped must not contain any item already included in mapped
+
+- All arrays must be lists
+- If empty, return []
+
+- All boolean fields must be true / false
+
+The label set is provided below (mapped must be selected from it):
+{label_list}
+
+=====================
+[OUTPUT FORMAT]
+=====================
+
+{
+  "final": {
+    "report_cn": "",
+    "report_label": {
+      "raw": [],
+      "mapped": [],
+      "unmapped": []
+    },
+    "explicit": false,
+    "uncertain": false,
+    "historical": false,
+    "old_MI": false
+  },
+  "status": "pass",
+  "reason": ""
+}
